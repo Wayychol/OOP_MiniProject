@@ -17,6 +17,7 @@ public class Game {
         System.out.print("Enter your adventurer's name: ");
         this.adventurer = new Adventurer(inputString());
         nextLevel();
+
         while (this.adventurer.isAlive() && this.level<5) {
             System.out.println("Starting...");
             wait(1);
@@ -51,6 +52,7 @@ public class Game {
     public void setMap() {
         Random r = new Random();
         this.animalEncounters.put(0, new Animal());
+
         for (int i = 0; i < getMapLength()+1; i++) {
             if (r.nextBoolean()) {
                 this.animalEncounters.put(i, new Animal());
@@ -95,10 +97,10 @@ public class Game {
     }
 
     private void heal(int animal) {
-        Random r = new Random();
         int rolled = rollDice();
+        Animal currentAnimal = getAnimalEncounters().get(animal);
         wait(1);
-        if (rolled >= getAnimalEncounters().get(animal).getInjuryPoints()) {
+        if (rolled >= currentAnimal.getInjuryPoints()) {
             System.out.println("You rolled " + rolled + ". The animal is healed!\n" +
                     "Your healing points go up by 2");
             getAdventurer().setHealingPoints(getAdventurer().getHealingPoints() + 2);
@@ -107,7 +109,7 @@ public class Game {
                     "Your healing points go down by 1");
             getAdventurer().setHealingPoints(getAdventurer().getHealingPoints() - 1);
             System.out.println("Oh no! The animal attacked you!" +
-                    "\nYour health points go down by " + getAnimalEncounters().get(animal).getAttackPoints());
+                    "\nYour health points go down by " + currentAnimal.getAttackPoints());
             attack(animal);
         }
         wait(1);
@@ -120,17 +122,18 @@ public class Game {
     }
 
     private void eat(int plant) {
-        if (getPlantEncounters().get(plant).isPoisonous()) {
-            System.out.println("Oh no! The " + getPlantEncounters().get(plant).getName() + " you ate is poisonous." +
-                    "\nYour health points go down by " + getPlantEncounters().get(plant).getHealingPoints());
+        Plant currentPlant = getPlantEncounters().get(plant);
+        if (currentPlant.isPoisonous()) {
+            System.out.println("Oh no! The " + currentPlant.getName() + " you ate is poisonous." +
+                    "\nYour health points go down by " + currentPlant.getHealingPoints());
             getAdventurer().setHealthPoints(
-                    getAdventurer().getHealthPoints() - getPlantEncounters().get(plant).getHealingPoints()
+                    getAdventurer().getHealthPoints() - currentPlant.getHealingPoints()
             );
         } else {
-            System.out.println("The " + getPlantEncounters().get(plant).getName() + " you ate healed you by " +
-                    getPlantEncounters().get(plant).getHealingPoints() + " points");
+            System.out.println("The " + currentPlant.getName() + " you ate healed you by " +
+                    currentPlant.getHealingPoints() + " points");
             getAdventurer().setHealthPoints(
-                    getAdventurer().getHealthPoints() + getPlantEncounters().get(plant).getHealingPoints());
+                    getAdventurer().getHealthPoints() + currentPlant.getHealingPoints());
         }
     }
 

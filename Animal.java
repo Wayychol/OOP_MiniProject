@@ -25,6 +25,8 @@ public class Animal extends Encounterable{
     // toString Method
     @Override
     public String toString() {
-        return getName() + ":\n\tInjury Points: " + getInjuryPoints() + "\n\tAttack Points: " + getAttackPoints();
+        return getName()
+                + ":\n\tInjury Points: " + getInjuryPoints()
+                + "\n\tAttack Points: " + getAttackPoints();
     }
 }

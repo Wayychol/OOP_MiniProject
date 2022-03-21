@@ -33,6 +33,8 @@ public class Adventurer {
     // toString Method
     @Override
     public String toString() {
-        return "Adventurer " + getName() + ":\n\tHealing Points: " + getHealingPoints() + "\n\tHealth points: " + getHealthPoints();
+        return "Adventurer " + getName()
+                + ":\n\tHealing Points: " + getHealingPoints()
+                + "\n\tHealth points: " + getHealthPoints();
     }
 }
