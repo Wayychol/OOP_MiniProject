@@ -1,0 +1,2 @@
+AdvTest1-6-9-2-2-AM-0:Deer,1,4-2:Deer,3,2-3:Bear,7,3-PM-5:Mint Leaf,1,false-
+AdvTest2-10-5-3-0-AM-0:Wolf,3,3-1:Deer,4,5-3:Bear,10,5-4:Deer,8,1-5:Wolf,11,2-6:Deer,7,2-PM-0:Daffodil,4,false-2:Daffodil,1,false-3:Mint Leaf,4,false-
