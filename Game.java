@@ -1,14 +1,11 @@
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class Game {
     private final Adventurer adventurer;
     private int level = 0;
-    private Map<Integer, Animal> animalEncounters = new HashMap<>();
-    private Map<Integer, Plant> plantEncounters = new HashMap<>();
+    private final Map<Integer, Animal> animalEncounters = new HashMap<>();
+    private final Map<Integer, Plant> plantEncounters = new HashMap<>();
     private final int[] mapSizes = {3, 5, 7, 10};
     private int mapLength = this.mapSizes[this.level];
 
@@ -17,6 +14,7 @@ public class Game {
         System.out.print("Enter your adventurer's name: ");
         this.adventurer = new Adventurer(inputString());
         nextLevel();
+        intro();
 
         while (this.adventurer.isAlive() && this.level<5) {
             System.out.println("Starting...");
@@ -78,10 +76,35 @@ public class Game {
     }
 
     // Gameplay methods
+    private void intro() {
+        String[] introduction = {
+                "Welcome to the forest adventure game",
+                "In this game you have to navigate five levels of forest paths, healing animals and finding plants",
+                "You have health points and healing points, you start the game at 10 and 5",
+                "To win the game you must end with 15 healing points or more",
+                "If your health points go below zero you die and the game ends",
+                "Every level has an increasing number of stages, each with a 1/2 chance to find an animal and a 1/4 chance to find a plant",
+                "Each animal has injury and attack points",
+                "If you choose to heal the animal you will roll two dice",
+                "If your combined score is higher than their injury points, you will heal the animal and gain 2 healing points",
+                "If you fail, you will lose 1 healing point and the animal will attack you, reducing your health points by the number of attack points they have so be wise!",
+                "If you choose not to heal an animal there is a 1/4 chance the angry animal will attack you",
+                "You can encounter a plant that you can eat",
+                "Plants have healing points, if the plant is safe, you will gain that many health points",
+                "There is a 1/4 chance a plant is poisonous, be careful!"
+        };
+
+        Arrays.asList(introduction).forEach(n -> {
+            System.out.println(n);
+            wait(1);
+        });
+
+    }
+
     private void nextLevel() {
         this.level++;
         if (getLevel() > 4) {
-            if (adventurer.getHealingPoints() > 10) {
+            if (adventurer.getHealingPoints() >= 15) {
                 System.out.println("Game over, you won! Here's how you ended the game:\n"
                         + getAdventurer().toString());
             } else {
@@ -157,12 +180,16 @@ public class Game {
                 String choice = inputString();
                 if (choice.equals("Y")) {
                     heal(i);
+                } else if (choice.equals("S")) {
+                    Progress p = new Progress(getAdventurer(), getAnimalEncounters(), getPlantEncounters(), getLevel(), i);
+                    p.saveProgress();
                 } else {
                     System.out.println("Your healing points stay the same");
                     if (rollDice() % 4 == 0) {
                         wait(1);
                         System.out.println("The animal is angry you didn't heal it and has attacked you!");
                         attack(i);
+                        System.out.println("Your health points have gone down to " + getAdventurer().getHealthPoints());
                     }
                 }
 
@@ -174,6 +201,9 @@ public class Game {
                 wait(1);
                 if (choice.equals("Y")) {
                     eat(i);
+                } else if (choice.equals("S")) {
+                    Progress p = new Progress(getAdventurer(), getAnimalEncounters(), getPlantEncounters(), getLevel(), i);
+                    p.saveProgress();
                 }
             } else {
                 System.out.println("There were no animals to heal, you move freely");
