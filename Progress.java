@@ -25,6 +25,26 @@ public class Progress {
         this.stage = stage;
     }
 
+    //Getters
+    public File getFile() {
+        return file;
+    }
+    public Adventurer getA() {
+        return a;
+    }
+    public Map<Integer, Animal> getAnimalMap() {
+        return animalMap;
+    }
+    public Map<Integer, Plant> getPlantMap() {
+        return plantMap;
+    }
+    public int getLevel() {
+        return level;
+    }
+    public int getStage() {
+        return stage;
+    }
+
     // Setters
     public void setA(Adventurer a) {
         this.a = a;
