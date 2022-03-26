@@ -1,7 +1,7 @@
 import java.util.Random;
 
 public abstract class Encounterable {
-    private String name;
+    public String name;
 
     // Getter
     public String getName() {
