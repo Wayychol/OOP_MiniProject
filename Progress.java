@@ -1,6 +1,8 @@
 import java.io.*;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -12,6 +14,7 @@ public class Progress {
     private int level;
     private int stage;
 
+    // Constructors
     public Progress() {}
 
     public Progress(Adventurer a, Map<Integer, Animal> animalMap, Map<Integer, Plant> plantMap, int level, int stage) {
@@ -19,6 +22,23 @@ public class Progress {
         this.animalMap = animalMap;
         this.plantMap = plantMap;
         this.level = level;
+        this.stage = stage;
+    }
+
+    // Setters
+    public void setA(Adventurer a) {
+        this.a = a;
+    }
+    public void setAnimalMap(Map<Integer, Animal> animalMap) {
+        this.animalMap = animalMap;
+    }
+    public void setPlantMap(Map<Integer, Plant> plantMap) {
+        this.plantMap = plantMap;
+    }
+    public void setLevel(int level) {
+        this.level = level;
+    }
+    public void setStage(int stage) {
         this.stage = stage;
     }
 
@@ -70,23 +90,75 @@ public class Progress {
         String line = "";
         try (Stream<String> lines = Files.lines(this.file.toPath())) {
             line = lines.skip(save-1).findFirst().get();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        } catch (IOException ignored) {}
 
-        ArrayList<Character> temp = new ArrayList<>();
-        char c;
-        int position = 0;
+        List<String> details = new ArrayList<>();
+        StringBuilder sb = new StringBuilder();
+
         line = line.replace(",", "");
-
         for (int i = 0; i < line.length(); i++) {
             if (line.charAt(i) != '-') {
-                temp.add(line.charAt(i));
+                sb.append(line.charAt(i));
             } else {
-                System.out.println(temp);
-                temp.clear();
+
+                details.add(sb.toString());
+                sb = new StringBuilder();
             }
         }
 
+        setA(new Adventurer(details.get(0)));
+        this.a.setHealingPoints(Integer.parseInt(details.get(1)));
+        this.a.setHealthPoints(Integer.parseInt(details.get(2)));
+        setLevel(Integer.parseInt(details.get(3)));
+        setStage(Integer.parseInt(details.get(4)));
+
+
+        List<String> animals = details.subList(6, details.indexOf("PM"));
+        List<String> plants = details.subList(details.indexOf("PM")+1, details.size());
+
+        saveMap(animals);
+    }
+
+    private Map<Integer, Animal> saveMap (List<String> list) {
+        Map<Integer, Animal> newMap = new HashMap<>();
+
+        // Temporary lists
+        List<Character> nameTemp = new ArrayList<>();
+        List<String> names = new ArrayList<>();
+        List<Integer> indices = new ArrayList<>();
+        List<Integer> injuryPoints = new ArrayList<>();
+        List<Integer> attackPoints = new ArrayList<>();
+
+        // Adds the Animal's index to the indices list
+        list.forEach(n -> {
+            indices.add((int) n.charAt(0));
+            list.set(list.indexOf(n), n.substring(2));
+        });
+
+
+        for (int i = 0; i < list.size(); i++) {
+            for (int j = 0; j < list.get(i).length(); j++) {
+                nameTemp.add(list.get(i).charAt(j));
+
+                for (String s: new Animal().getTypes()) {
+                    String nameString = nameTemp.toString()
+                            .replace("[", "")
+                            .replace(", ", "")
+                            .replace("]", "");
+
+                    if (nameString.equals(s)) {
+                        names.add(nameString);
+
+                        // Add injury and attack points
+
+                        nameTemp.clear();
+                    }
+                }
+            }
+
+        }
+
+        names.forEach(System.out::println);
+        return newMap;
     }
 }
