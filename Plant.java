@@ -1,5 +1,4 @@
 public class Plant extends Encounterable{
-    private String name;
     private int healingPoints;
     private boolean poisonous;
     private final String[] types = {"Berry", "Mint", "Daffodil", "Mushroom"};
@@ -9,6 +8,12 @@ public class Plant extends Encounterable{
         this.name = types[randomNumber(4)];
         this.healingPoints = randomNumber(4)+1;
         this.poisonous = randomNumber(4) == 2;
+    }
+
+    public Plant(String name, int healingPoints, boolean poisonous) {
+        this.name = name;
+        this.healingPoints = healingPoints;
+        this.poisonous = poisonous;
     }
 
     // Getters

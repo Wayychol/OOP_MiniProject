@@ -1,14 +1,19 @@
 public class Animal extends Encounterable{
-    private String name;
     private int injuryPoints;
     private int attackPoints;
-    private String[] types = {"Wolf", "Bear", "Deer"};
+    private final String[] types = {"Wolf", "Bear", "Deer"};
 
     // Constructor
     public Animal() {
         this.name = types[randomNumber(3)];
         this.injuryPoints = randomNumber(11)+1;
         this.attackPoints = randomNumber(6)+1;
+    }
+
+    public Animal(String name, int injuryPoints, int attackPoints) {
+        this.name = name;
+        this.injuryPoints = injuryPoints;
+        this.attackPoints = attackPoints;
     }
 
     // Getters
