@@ -31,13 +31,13 @@ public class Game {
         wait(2);
         System.out.println(save.getA().toString());
         this.adventurer = save.getA();
+        setLevel(save.getLevel());
         wait(1);
         nextLevel();
 
         while (this.adventurer.isAlive() && this.level<5) {
             System.out.println("Starting...");
             wait(1);
-            setLevel(save.getLevel()); // Infinite loop, fix it
             System.out.println("Level: " + save.getLevel() + ", Stage: " + save.getStage());
             wait(1);
             gameplay(save);
@@ -72,7 +72,7 @@ public class Game {
         Random r = new Random();
         this.animalEncounters.put(0, new Animal());
 
-        for (int i = 0; i < getMapLength()+1; i++) {
+        for (int i = 1; i < getMapLength()+1; i++) {
             if (r.nextBoolean()) {
                 this.animalEncounters.put(i, new Animal());
             } else if (r.nextInt(3)+ 1 == 3) {
