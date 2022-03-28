@@ -15,8 +15,10 @@ public class Progress {
     private int stage;
 
     // Constructors
+        // Default constructor
     public Progress() {}
 
+        // Game save constructor
     public Progress(Adventurer a, Map<Integer, Animal> animalMap, Map<Integer, Plant> plantMap, int level, int stage) {
         this.a = a;
         this.animalMap = animalMap;
@@ -68,6 +70,9 @@ public class Progress {
             BufferedWriter bw = new BufferedWriter(fw);
             String x = "-";
             String y = ",";
+
+            // Game save format:
+                // Name-
 
             bw.write(a.getName() + x);
             for (int i : new int[]{a.getHealingPoints(), a.getHealthPoints(), this.level, this.stage}) {
