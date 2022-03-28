@@ -38,7 +38,6 @@ public class Game {
         this.adventurer = save.getA();
         setLevel(save.getLevel());
         wait(1);
-        nextLevel();
 
         while (this.level<5) {
             System.out.println("Starting...");

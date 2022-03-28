@@ -8,7 +8,7 @@ import java.util.stream.Stream;
 
 public class Progress {
     private final File file = new File("progress.txt");
-    private Adventurer a = new Adventurer("Rachel");
+    private Adventurer a;
     private Map<Integer, Animal> animalMap;
     private Map<Integer, Plant> plantMap;
     private int level;
@@ -72,7 +72,7 @@ public class Progress {
             String y = ",";
 
             // Game save format:
-                // Name-
+            // Name-HealingPoints-HealthPoints-Level-Stage-AM:-AnimalName,AnimalInjuryPoints,AnimalInjuryPoints-PM:PlantName,PlantHealingPoints-PlantPoisonous
 
             bw.write(a.getName() + x);
             for (int i : new int[]{a.getHealingPoints(), a.getHealthPoints(), this.level, this.stage}) {
@@ -97,24 +97,20 @@ public class Progress {
                 }
             });
 
-            bw.write("\n");
+            bw.write("\n"); // Appends new line
             bw.close();
-            System.out.println("Successfully wrote to the file.");
+            System.out.println("Game successfully saved.");
             System.exit(0);
         } catch (IOException e) {
             System.out.println("An error occurred.");
             e.printStackTrace();
-        } catch (NullPointerException npe) {
-            System.out.println("null pointer exception");
-        } catch (Exception e) {
-            System.out.println("???");
-        }
+        } catch (Exception ignored) {}
     }
 
     public void loadProgress(int save){
         String line = "";
         try (Stream<String> lines = Files.lines(this.file.toPath())) {
-            line = lines.skip(save-1).findFirst().get();
+            line = lines.skip(save-1).findFirst().orElse(null);
         } catch (IOException ignored) {}
 
         List<String> details = new ArrayList<>();
@@ -125,7 +121,6 @@ public class Progress {
             if (line.charAt(i) != '-') {
                 sb.append(line.charAt(i));
             } else {
-
                 details.add(sb.toString());
                 sb = new StringBuilder();
             }
@@ -146,7 +141,7 @@ public class Progress {
     }
 
     // Takes in the list of Animal details, breaking the string down to return a map of Animal objects
-    // Takes in an unused String c to allow for method overloading, the plant version will take a char c
+        // Takes in an unused String c to allow for method overloading, the plant version will take a char c
     private Map<Integer, Animal> saveMap (String c, List<String> list) {
         Map<Integer, Animal> newMap = new HashMap<>();
 
@@ -193,7 +188,7 @@ public class Progress {
         return newMap;
     }
 
-    // Takes in the list of Plant details, breaking the string down to return a map of Plant objects
+        // Takes in the list of Plant details, breaking the string down to return a map of Plant objects
     private Map<Integer, Plant> saveMap (char c, List<String> list) {
         Map<Integer, Plant> newMap = new HashMap<>();
 

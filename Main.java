@@ -14,8 +14,9 @@ public class Main {
         if (choice.equals("N")) {
             Game g = new Game();
         } else {
+            System.out.print("Enter which save you'd like to load: ");
             Progress p = new Progress();
-            p.loadProgress(2);
+            p.loadProgress(s.nextInt());
             Game g = new Game(p);
         }
     }
