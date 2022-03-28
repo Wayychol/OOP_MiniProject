@@ -2,6 +2,7 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class Game {
+    // Class attributes
     private final Adventurer adventurer;
     private int level = 0;
     private final Map<Integer, Animal> animalEncounters = new HashMap<>();
@@ -9,17 +10,41 @@ public class Game {
     private final int[] mapSizes = {3, 5, 7, 10};
     private int mapLength = this.mapSizes[this.level];
 
-    // Constructor
+    // Constructors
+        // New game constructor
     public Game() {
         System.out.print("Enter your adventurer's name: ");
         this.adventurer = new Adventurer(inputString());
         nextLevel();
         intro();
 
-        while (this.adventurer.isAlive() && this.level<5) {
+        // While loop that runs the game, ends when level 4 is complete
+        while (this.level<5) {
             System.out.println("Starting...");
             wait(1);
             gameplay();
+            System.out.println("Loading next level...");
+            wait(2);
+            nextLevel();
+        }
+    }
+
+        // Constructor that loads an existing save
+    public Game(Progress save) {
+        // Loads the values stored in Progress to the class attributes
+        System.out.println("Loading save...");
+        wait(2);
+        System.out.println(save.getA().toString());
+        this.adventurer = save.getA();
+        setLevel(save.getLevel());
+        wait(1);
+
+        while (this.level<5) {
+            System.out.println("Starting...");
+            wait(1);
+            System.out.println("Level: " + save.getLevel() + ", Stage: " + save.getStage());
+            wait(1);
+            gameplay(save);
             System.out.println("Loading next level...");
             wait(2);
             nextLevel();
@@ -49,30 +74,37 @@ public class Game {
     // Setters
     public void setMap() {
         Random r = new Random();
-        this.animalEncounters.put(0, new Animal());
 
-        for (int i = 0; i < getMapLength()+1; i++) {
-            if (r.nextBoolean()) {
+        // Ensures the level always starts with an Encounterable object
+        if (r.nextBoolean()) this.animalEncounters.put(0, new Animal());
+            else this.plantEncounters.put(0, new Plant());
+
+
+        for (int i = 1; i < getMapLength()+1; i++) {
+            if (r.nextBoolean()) { // 1/2 chance of an animal appearing
                 this.animalEncounters.put(i, new Animal());
-            } else if (r.nextInt(3)+ 1 == 3) {
+            } else if (r.nextInt(3)+ 1 == 3) { // 1/4 chance of a plant
                 this.plantEncounters.put(i, new Plant());
             }
         }
+    }
+    public void setLevel(int level) {
+        this.level = level;
     }
 
     // Helper Methods
     private int rollDice() {
         Random r = new Random();
-        return (r.nextInt(6)+1) + (r.nextInt(6)+1);
+        return (r.nextInt(6)+1) + (r.nextInt(6)+1); // "Rolls" two dice and returns the sum
     }
     private String inputString() {
         Scanner s = new Scanner(System.in);
-        return s.nextLine();
+        return s.nextLine(); // Returns the user's input, prevents a new Scanner object needing to be created in each method
     }
     private void wait(int sec) {
         try {
             TimeUnit.SECONDS.sleep(sec);
-        } catch (InterruptedException ignored) {}
+        } catch (InterruptedException ignored) {} // Waits for the specified number of seconds before continuing the code
     }
 
     // Gameplay methods
@@ -94,7 +126,7 @@ public class Game {
                 "There is a 1/4 chance a plant is poisonous, be careful!"
         };
 
-        Arrays.asList(introduction).forEach(n -> {
+        Arrays.asList(introduction).forEach(n -> { // An array and foreach statement is used instead of many System.out.println statements
             System.out.println(n);
             wait(1);
         });
@@ -114,6 +146,7 @@ public class Game {
             System.exit(0);
         } else {
             getAnimalEncounters().clear();
+            getPlantEncounters().clear(); // Clears both maps so they can be populated again
             mapLength = getMapSizes()[getLevel() - 1];
             setMap();
         }
@@ -212,6 +245,101 @@ public class Game {
             wait(1);
         }
         System.out.println("End of level " + getLevel());
+    }
+
+    // Overloaded method, used for the level the save starts from
+    public void gameplay(Progress save) {
+        System.out.println("Level " + getLevel() + ", Map Length: " + getMapLength());
+        wait(1);
+
+        if (save.getLevel() == getLevel()) {
+            for (int i = 0; i < save.getStage(); i++) {
+                System.out.println("Stage " + (i+1) + "\n" + getAdventurer().toString());
+                wait(1);
+                if (getAnimalEncounters().containsKey(i)) {
+                    System.out.println("\nYou have met " + getAnimalEncounters().get(i).toString());
+
+                    System.out.print("Would you like to heal the animal? [Y/N] ");
+                    String choice = inputString();
+                    if (choice.equals("Y")) {
+                        heal(i);
+                    } else if (choice.equals("S")) {
+                        Progress p = new Progress(getAdventurer(), getAnimalEncounters(), getPlantEncounters(), getLevel(), i);
+                        p.saveProgress();
+                    } else {
+                        System.out.println("Your healing points stay the same");
+                        if (rollDice() % 4 == 0) {
+                            wait(1);
+                            System.out.println("The animal is angry you didn't heal it and has attacked you!");
+                            attack(i);
+                            System.out.println("Your health points have gone down to " + getAdventurer().getHealthPoints());
+                        }
+                    }
+
+                } else if (getPlantEncounters().containsKey(i)) {
+                    System.out.println("\nYou have found a " + getPlantEncounters().get(i).toString());
+
+                    System.out.print("Would you like to eat the plant? [Y/N] ");
+                    String choice = inputString();
+                    wait(1);
+                    if (choice.equals("Y")) {
+                        eat(i);
+                    } else if (choice.equals("S")) {
+                        Progress p = new Progress(getAdventurer(), getAnimalEncounters(), getPlantEncounters(), getLevel(), i);
+                        p.saveProgress();
+                    }
+                } else {
+                    System.out.println("There were no animals to heal, you move freely");
+                }
+                checkDead();
+                wait(1);
+            }
+            System.out.println("End of level " + getLevel());
+        }
+        else {
+            for (int i = 0; i < getMapLength(); i++) {
+                System.out.println("Stage " + (i + 1) + "\n" + getAdventurer().toString());
+                wait(1);
+                if (getAnimalEncounters().containsKey(i)) {
+                    System.out.println("\nYou have met " + getAnimalEncounters().get(i).toString());
+
+                    System.out.print("Would you like to heal the animal? [Y/N] ");
+                    String choice = inputString();
+                    if (choice.equals("Y")) {
+                        heal(i);
+                    } else if (choice.equals("S")) {
+                        Progress p = new Progress(getAdventurer(), getAnimalEncounters(), getPlantEncounters(), getLevel(), i);
+                        p.saveProgress();
+                    } else {
+                        System.out.println("Your healing points stay the same");
+                        if (rollDice() % 4 == 0) {
+                            wait(1);
+                            System.out.println("The animal is angry you didn't heal it and has attacked you!");
+                            attack(i);
+                            System.out.println("Your health points have gone down to " + getAdventurer().getHealthPoints());
+                        }
+                    }
+
+                } else if (getPlantEncounters().containsKey(i)) {
+                    System.out.println("\nYou have found a " + getPlantEncounters().get(i).toString());
+
+                    System.out.print("Would you like to eat the plant? [Y/N] ");
+                    String choice = inputString();
+                    wait(1);
+                    if (choice.equals("Y")) {
+                        eat(i);
+                    } else if (choice.equals("S")) {
+                        Progress p = new Progress(getAdventurer(), getAnimalEncounters(), getPlantEncounters(), getLevel(), i);
+                        p.saveProgress();
+                    }
+                } else {
+                    System.out.println("There were no animals to heal, you move freely");
+                }
+                checkDead();
+                wait(1);
+            }
+            System.out.println("End of level " + getLevel());
+        }
     }
 
 }
