@@ -74,14 +74,14 @@ public class Progress {
             // Game save format:
             // Name-HealingPoints-HealthPoints-Level-Stage-AM:-AnimalName,AnimalInjuryPoints,AnimalInjuryPoints-PM:PlantName,PlantHealingPoints-PlantPoisonous
 
-            bw.write(a.getName() + x);
+            bw.write(a.getName() + x); //Name
             for (int i : new int[]{a.getHealingPoints(), a.getHealthPoints(), this.level, this.stage}) {
-                bw.write(i + x);
+                bw.write(i + x); // HealingPoints, HealthPoints, Level, Stage
             }
 
             bw.write("AM" + x);
             animalMap.forEach((k, v) -> {
-                try {
+                try { // AnimalName, AnimalInjuryPoints, AnimalInjuryPoints
                     bw.write(k + ":" + v.getName() + y + v.getInjuryPoints() + y+ v.getAttackPoints() + x);
                 } catch (IOException e) {
                     System.out.println("Failed.");
@@ -90,7 +90,7 @@ public class Progress {
 
             bw.write("PM" + x);
             plantMap.forEach((k,v) -> {
-                try {
+                try { // PlantName, PlantHealingPoints, PlantPoisonous
                     bw.write(k + ":" + v.getName() + y + v.getHealingPoints() + y + (v.isPoisonous() ? "t" : "f") + x);
                 } catch (IOException e) {
                     System.out.println("Failed.");
@@ -110,7 +110,7 @@ public class Progress {
     public void loadProgress(int save){
         String line = "";
         try (Stream<String> lines = Files.lines(this.file.toPath())) {
-            line = lines.skip(save-1).findFirst().orElse(null);
+            line = lines.skip(save-1).findFirst().get();
         } catch (IOException ignored) {}
 
         List<String> details = new ArrayList<>();
@@ -126,9 +126,9 @@ public class Progress {
             }
         }
 
-        setA(new Adventurer(details.get(0)));
+        setA(new Adventurer(details.get(0))); // Creates new Adventurer object
         this.a.setHealingPoints(Integer.parseInt(details.get(1)));
-        this.a.setHealthPoints(Integer.parseInt(details.get(2)));
+        this.a.setHealthPoints(Integer.parseInt(details.get(2))); // Sets Adventurer attributes
         setLevel(Integer.parseInt(details.get(3)));
         setStage(Integer.parseInt(details.get(4)));
 

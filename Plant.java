@@ -17,6 +17,7 @@ public class Plant extends Encounterable{
     }
 
     // Getters
+    @Override
     public String getName() {
         return this.name;
     }

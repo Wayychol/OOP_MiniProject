@@ -17,6 +17,7 @@ public class Animal extends Encounterable{
     }
 
     // Getters
+    @Override
     public String getName() {
         return name;
     }
