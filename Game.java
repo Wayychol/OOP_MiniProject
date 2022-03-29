@@ -83,7 +83,7 @@ public class Game {
         for (int i = 1; i < getMapLength()+1; i++) {
             if (r.nextBoolean()) { // 1/2 chance of an animal appearing
                 this.animalEncounters.put(i, new Animal());
-            } else if (r.nextInt(3)+ 1 == 3) { // 1/4 chance of a plant
+            } else if (r.nextInt(4) == 3) { // 1/4 chance of a plant
                 this.plantEncounters.put(i, new Plant());
             }
         }
@@ -179,6 +179,7 @@ public class Game {
 
     private void eat(int plant) {
         Plant currentPlant = getPlantEncounters().get(plant);
+        wait(1);
         if (currentPlant.isPoisonous()) {
             System.out.println("Oh no! The " + currentPlant.getName() + " you ate is poisonous." +
                     "\nYour health points go down by " + currentPlant.getHealingPoints());
