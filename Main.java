@@ -16,6 +16,7 @@ public class Main {
         } else {
             System.out.print("Enter which save you'd like to load: ");
             Progress p = new Progress();
+
             p.loadProgress(s.nextInt());
             Game g = new Game(p);
         }

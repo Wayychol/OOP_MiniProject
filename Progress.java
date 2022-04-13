@@ -1,18 +1,25 @@
 import java.io.*;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Stream;
 
 public class Progress {
-    private final File file = new File("progress.txt");
+    private static final File file = new File("progress.txt");
+    private static int fileLines;
     private Adventurer a;
     private Map<Integer, Animal> animalMap;
     private Map<Integer, Plant> plantMap;
     private int level;
     private int stage;
+
+    // Static block that sets the number of file lines before the constructor runs
+    static {
+        try {
+            fileLines = (int) Files.lines(file.toPath()).count();
+        } catch (IOException e) {
+            System.out.println("Error.");
+        }
+    }
 
     // Constructors
         // Default constructor
@@ -46,6 +53,9 @@ public class Progress {
     public int getStage() {
         return stage;
     }
+    public static int getFileLines() {
+        return fileLines;
+    }
 
     // Setters
     public void setA(Adventurer a) {
@@ -63,10 +73,13 @@ public class Progress {
     public void setStage(int stage) {
         this.stage = stage;
     }
+    public static void setFileLines(int fileLines) {
+        Progress.fileLines = fileLines;
+    }
 
     public void saveProgress() {
         try {
-            FileWriter fw = new FileWriter(this.file, true);
+            FileWriter fw = new FileWriter(file, true);
             BufferedWriter bw = new BufferedWriter(fw);
             String x = "-";
             String y = ",";
@@ -99,7 +112,7 @@ public class Progress {
 
             bw.write("\n"); // Appends new line
             bw.close();
-            System.out.println("Game successfully saved.");
+            System.out.println("Game save number " + getFileLines() + " successfully saved.");
             System.exit(0);
         } catch (IOException e) {
             System.out.println("An error occurred.");
@@ -109,9 +122,12 @@ public class Progress {
 
     public void loadProgress(int save){
         String line = "";
-        try (Stream<String> lines = Files.lines(this.file.toPath())) {
+        try (Stream<String> lines = Files.lines(file.toPath())) {
             line = lines.skip(save-1).findFirst().get();
         } catch (IOException ignored) {}
+        catch (NoSuchElementException nsee) {
+            System.out.println("Invalid number. There are only " + Progress.getFileLines() + " game saves.");
+        }
 
         List<String> details = new ArrayList<>();
         StringBuilder sb = new StringBuilder();
@@ -230,7 +246,7 @@ public class Progress {
         }
 
         for (int i = 0; i < indices.size(); i++) {
-            newMap.put(indices.get(i), new Plant(names.get(i), healingPoints.get(i), (poisonous.get(i) == "t")));
+            newMap.put(indices.get(i), new Plant(names.get(i), healingPoints.get(i), (poisonous.get(i).equals("t"))));
         }
         return newMap;
     }
