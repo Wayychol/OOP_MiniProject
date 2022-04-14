@@ -1,3 +1,5 @@
+package project;
+
 public class Animal extends Encounterable{
     private int injuryPoints;
     private int attackPoints;

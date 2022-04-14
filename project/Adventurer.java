@@ -1,3 +1,5 @@
+package project;
+
 public class Adventurer {
     private final String name;
     private int healingPoints = 5;

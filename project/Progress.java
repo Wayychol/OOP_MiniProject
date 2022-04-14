@@ -1,10 +1,12 @@
+package project;
+
 import java.io.*;
 import java.nio.file.Files;
 import java.util.*;
 import java.util.stream.Stream;
 
 public class Progress {
-    private static final File file = new File("progress.txt");
+    private static final File file = new File("project/progress.txt");
     private static int fileLines;
     private Adventurer a;
     private Map<Integer, Animal> animalMap;

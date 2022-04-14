@@ -1,3 +1,5 @@
+package project;
+
 public class Plant extends Encounterable{
     private int healingPoints;
     private boolean poisonous;
