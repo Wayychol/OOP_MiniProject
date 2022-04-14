@@ -2,8 +2,8 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Welcome to the Forest Adventure Game!");
-        System.out.print("Would you like to start a new game or load a save? [N/S]: ");
+        System.out.print("Welcome to the Forest Adventure Game!"
+                + "\nWould you like to start a new game or load a save? [N/S]: ");
         Scanner s = new Scanner(System.in);
         String choice = s.nextLine();
         while (!(choice.equals("N") || choice.equals("S"))) {

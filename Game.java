@@ -49,7 +49,7 @@ public class Game {
                 else gameplay();
 
             System.out.println("Loading next level...");
-            wait(2);
+            wait(5);
             nextLevel();
         }
     }
@@ -99,7 +99,6 @@ public class Game {
         this.plantEncounters = save.getPlantMap();
     }
 
-
     public void setLevel(int level) {
         this.level = level;
     }
@@ -117,6 +116,21 @@ public class Game {
         try {
             TimeUnit.SECONDS.sleep(sec);
         } catch (InterruptedException ignored) {} // Waits for the specified number of seconds before continuing the code
+    }
+    private void wait(double sec) {
+        try {
+            TimeUnit.MILLISECONDS.sleep((long) (sec*100));
+        } catch (InterruptedException ignored) {} // Waits for the specified number of milliseconds before continuing the code
+    }
+    private void scrollText(String line) {
+        List<Character> charList = new ArrayList<>();
+        for (char c: line.toCharArray()) charList.add(c);
+
+        charList.forEach(c -> {
+            System.out.print(c);
+            wait(0.5);
+        }); //Prints the string character by character
+        System.out.print("\n");
     }
 
     // Gameplay methods
@@ -136,12 +150,13 @@ public class Game {
                 "You can encounter a plant that you can eat",
                 "Plants have healing points, if the plant is safe, you will gain that many health points",
                 "There is a 1/4 chance a plant is poisonous, be careful!",
-                "At any time, enter 'S' to save your game state"
+                "At any time, enter 'S' to save your game state",
+                "When a plant or animal is encountered, any input that is not a 'Y' or 'S' will be registered as a 'N'"
         };
 
         Arrays.asList(introduction).forEach(n -> { // An array and foreach statement is used instead of many System.out.println statements
             System.out.println(n);
-            wait(2);
+            wait(1);
         });
 
     }
@@ -218,12 +233,13 @@ public class Game {
         System.out.println("Level " + getLevel() + ", Map Length: " + getMapLength());
         wait(1);
         for (int i = 0; i < getMapLength(); i++) {
-            System.out.println("Stage " + (i+1) + "\n" + getAdventurer().toString());
+            System.out.println("\nStage " + (i+1) + "\n" + getAdventurer().toString());
             wait(1);
             if (getAnimalEncounters().containsKey(i)) {
                 System.out.println("\nYou have met " + getAnimalEncounters().get(i).toString());
+                wait(1);
 
-                System.out.print("Would you like to heal the animal? [Y/N] ");
+                scrollText("Would you like to heal the animal? [Y/N] ");
                 String choice = inputString();
                 if (choice.equals("Y")) {
                     heal(i);
@@ -242,8 +258,9 @@ public class Game {
 
             } else if (getPlantEncounters().containsKey(i)) {
                 System.out.println("\nYou have found a " + getPlantEncounters().get(i).toString());
+                wait(1);
 
-                System.out.print("Would you like to eat the plant? [Y/N] ");
+                scrollText("Would you like to eat the plant? [Y/N] ");
                 String choice = inputString();
                 wait(1);
                 if (choice.equals("Y")) {
@@ -268,16 +285,17 @@ public class Game {
 
 
         for (int i = 0; i < (mapSizes[getLevel() - 1] - save.getStage() - 1); i++) {
-            System.out.println("Stage " + (i+1) + "\n" + getAdventurer().toString());
+            System.out.println("\nStage " + (i+1) + "\n" + getAdventurer().toString());
             wait(1);
             if (getAnimalEncounters().containsKey(i)) {
                 System.out.println("\nYou have met " + getAnimalEncounters().get(i).toString());
+                wait(1);
 
-                System.out.print("Would you like to heal the animal? [Y/N] ");
+                scrollText("Would you like to heal the animal? [Y/N] ");
                 String choice = inputString();
-                if (choice.equals("Y")) {
+                if (choice.equalsIgnoreCase("Y")) {
                     heal(i);
-                } else if (choice.equals("S")) {
+                } else if (choice.equalsIgnoreCase("S")) {
                     Progress p = new Progress(getAdventurer(), getAnimalEncounters(), getPlantEncounters(), getLevel(), i);
                     p.saveProgress();
                 } else {
@@ -292,13 +310,14 @@ public class Game {
 
             } else if (getPlantEncounters().containsKey(i)) {
                 System.out.println("\nYou have found a " + getPlantEncounters().get(i).toString());
+                wait(1);
 
-                System.out.print("Would you like to eat the plant? [Y/N] ");
+                scrollText("Would you like to eat the plant? [Y/N] ");
                 String choice = inputString();
                 wait(1);
-                if (choice.equals("Y")) {
+                if (choice.equalsIgnoreCase("Y")) {
                     eat(i);
-                } else if (choice.equals("S")) {
+                } else if (choice.equalsIgnoreCase("S")) {
                     Progress p = new Progress(getAdventurer(), getAnimalEncounters(), getPlantEncounters(), getLevel(), i);
                     p.saveProgress();
                 }

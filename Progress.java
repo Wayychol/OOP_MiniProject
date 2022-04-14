@@ -112,7 +112,7 @@ public class Progress {
 
             bw.write("\n"); // Appends new line
             bw.close();
-            System.out.println("Game save number " + getFileLines() + " successfully saved.");
+            System.out.println("Game save number " + getFileLines()+1 + " successfully saved.");
             System.exit(0);
         } catch (IOException e) {
             System.out.println("An error occurred.");
